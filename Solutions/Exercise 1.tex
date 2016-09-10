@@ -37,6 +37,9 @@
 \maketitle
 \vspace{-1cm}
 
+
+\section*{Linear Regression}
+
 \begin{problem}{A}
 Let $y = X\beta + e$, where $y = (y_1, \ldots, y_N)$, $X$ is an $N \times P$ patrix with $i$th row $x_i$ and $e$ a vector of model residuals.
 Further let $W$ be the $N \times N$ diagonal vector of weights $w_i$.
@@ -118,4 +121,87 @@ Please see the attached code
 Please see the attached code
 \end{problem}
 
+\section*{Generalized Linear Models}
+
+\begin{problem}{A}
+Let $y_i \sim \text{Binomial}(m_i, w_i)$ where
+\begin{itemize}
+    \item $y_i$ is an integer number of successes
+    \item $m_i$ is the number of trials for the $i$th case.
+    \item $w_i$ is the success probability, a regression on a feature vector $x_i$ given by $w_i = \frac{1}{1 + \exp\{-x_i^T\beta\}}$.
+\end{itemize}
+
+Then we may write the negative log likelihood:
+\begin{align*}
+l(\beta) &= -\log \left[\prod_{i=1}^Np(y_i|\beta)\right]\\
+&= - \sum_{i=1}^N \log(p(y_i|\beta))\\
+&= - \sum_{i=1}^N \log(\frac{m_i}{y_i(m_i - y_i)}w_i^{y_i}(1-w_i)^{m_i-y_i})\\
+&= - \sum_{i=1}^N \log(\frac{m_i}{y_i(m_i - y_i)}) + y_i\log(w_i) + (m_i - y_i)\log(1-w_i)\\
+\end{align*}
+
+We now want to derive the gradient for this expression.
+Note that $$\nabla_\beta w_i = \frac{-1}{(1+\exp\{-x_i^T\beta\})^2}*-x_i^T\exp\{-x_i^T\beta\}$$
+We also note that $$1 - w_i = \frac{\exp\{-x_i^T\beta\}}{1+\exp\{-x_i^T\beta\}}$$
+Thus $$\nabla_\beta w_i = w_i(1-w_i)x_i^T$$.
+We now find
+\begin{align*}
+\nabla l(\beta) &= -\sum_{i=1}^N \nabla_\beta y_i\log(w_i) + \nabla_\beta (m_i-y_i)\log(1-w_i)\\
+&= -\sum_{i=1}^N \frac{y_i}{w_i}\nabla_\beta w_i + \frac{(m_i-y_i)}{1-w_i}\nabla_\beta (1-w_i)\\
+&= -\sum_{i=1}^N \frac{y_i}{w_i}\nabla_\beta w_i + \frac{(m_i-y_i)}{1-w_i}\nabla_\beta(1- w_i)\\
+&= -\sum_{i=1}^N \frac{y_i}{w_i}w_i(1-w_i)x_i^T- \frac{(m_i-y_i)}{1-w_i}w_i(1-w_i)x_i^T\\
+&=-\sum_{i=1}^N y_i(1-w_i)x_i^T- (m_i-y_i)w_ix_i^T\\
+&= -\sum_{i=1}^N (y_i - y_iw_i -m_iw_i + y_iw_i)x_i^T\\
+&= -\sum_{i=1}^N (y_i - m_iw_i)x_i^T\\
+&= -\sum_{i=1}^N (y_i - \hat{y_i})x_i^T
+\end{align*}
+\end{problem}
+
+\begin{problem}{B}
+See attached Code
+\end{problem}
+
+\begin{problem}{C}
+Let $\beta_0 \in \R^p$, an intermediate guess for our vector or regression coefficients.
+We want to show that the second order Taylor approximation of $l(\beta)$ around the point $\beta_0$ takes the form
+$$q(\beta;\beta_0) = \frac{1}{2}(z - X\beta)^TW(z-X\beta) + c$$
+where $z$ is a vector of ``working responses'' and $W$ is the diagonal matrix of ``working weights'' and $c$ is a constant that doesnt involve $\beta$.
+
+Recall that we have that $\nabla l(\beta) = \sum_{i=1}^N(m_iw_i - y_i)x_i$
+Further recall that $\nabla_\beta w_i = w_i(1-w_i)x_i^T$
+We want to further consider $\nabla^2 l(\beta)$.
+\begin{align*}
+\nabla^2 l(\beta) &= \nabla_\beta \left( \sum_{i=1}^N(m_iw_i - y_i)x_i^T \right)\\
+&= \nabla_\beta \left( \sum_{i=1}^Nm_iw_ix_i^T - y_ix_i^T \right)\\
+&=  \sum_{i=1}^N\nabla_\beta(m_iw_ix_i^T) - \nabla_\beta(y_ix_i)\\
+&= \left(\sum_{i=1}^N \nabla_\beta(m_iw_ix_i^T)\right)
+\end{align*}
+We consdier $\nabla_\beta(m_iw_ix_i)$ for arbitrary $i$, where $(m_iw_ix_i^T)$ is a row vector of the form $$(m_iw_ix_{i1}, m_iw_ix_{i2}, \ldots m_iw_ix_{iP})$$.
+
+It follows that $\nabla_\beta(m_iw_ix_i^T)$ has form
+$$\nabla_\beta(m_iw_ix_i^T) = \left[\begin{array}{c} m_i \nabla_\beta w_i x_{i1} \\ m_i \nabla_\beta w_i x_{i2} \\ \vdots \\ m_i \nabla_\beta w_i x_{iP} \end{array}\right]$$
+This in turn gives us
+$$\nabla_\beta(m_iw_ix_i^T) = \left[\begin{array}{c} m_i (w_i(1-w_i)) x_{i1}x_i^T \\ m_i  (w_i(1-w_i)) x_{i2}x_i^T \\ \vdots \\ m_i (w_i(1-w_i) x_{iP}x_i^T \end{array}\right]$$
+where $\nabla_\beta(m_iw_ix_i^T)$ is a matrix $A$ with $j^{th}$ row $A_j = m_i (w_i(1-w_i)) x_{ij}x_i^T$.
+Noting this gives us that $\nabla_\beta(m_iw_ix_i) = m_iw_i(1-w_i)x_i \otimes x_i$, where $\otimes$ denotes the outer product for a vector v: $vv^T$.\
+
+Thus we write $$\nabla^2 l (\beta) = \sum_{i=1}^N m_iw_i(1-w_i)x_ix_i^T$$.
+
+
+Using the second-order Taylor series expansion centered at the initial point $\beta_0$, we have
+$$q(\beta) = l(\beta_0) + \nabla f(\beta_0)(\beta - \beta_0) + \frac{1}{2} (\beta - \beta_0)^T \nabla^2 f(\beta_0)(\beta - \beta_0)$$
+\begin{align*}
+q(\beta) &= l(\beta_0) +\left( \sum_{i=1}^N (m_iw_i - y_i)x_i^T \right)(\beta - \beta_0) + \frac{1}{2}(\beta - \beta_0)^T\sum_{i=1}^Nm_iw_i(1-w_i)x_ix_i^T(\beta - \beta_0)\\
+&= l(\beta_0) +\left( \sum_{i=1}^N (m_iw_i - y_i)x_i^T(\beta - \beta_0) \right) + \sum_{i=1}^Nm_iw_i(1-w_i)(\frac{1}{2}(\beta - \beta_0)^T)x_ix_i^T(\beta - \beta_0)\\
+&= l(\beta_0) + \sum_{i=1}^N \left((m_iw_i - y_i) + \frac{1}{2}m_iw_i(1-w_i)(\beta - \beta_0)^Tx_i) \right)x_i^T(\beta - \beta_0)\\
+&= l(\beta_0) + \sum_{i=1}^N \left( m_iw_i\left(1  + \frac{1}{2}(1-w_i)(\beta - \beta_0)^Tx_i)\right) - y_i \right)x_i^T(\beta - \beta_0)
+\end{align*}
+\end{problem}
+
+\begin{problem}{D}
+See attached code
+\end{problem}
+
+\begin{problem}{E}
+
+\end{problem}
 \end{document}
