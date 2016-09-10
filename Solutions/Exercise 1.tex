@@ -1,0 +1,121 @@
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsfonts,amssymb,amsthm,amsmath,graphicx}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{verbatim}
+\usepackage{mathtools}
+\usepackage{enumitem}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}
+}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\e}{\epsilon}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\norm}[1]{\left\lVert#1\right\rVert}
+
+\newenvironment{problem}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+
+\author{}
+\title{\normalsize \flushright \textsc{Amelia Henriksen - STS 385  Exercises 1 }}%put in homework number
+\date{}
+\vspace{-1cm}
+\maketitle
+\vspace{-1cm}
+
+\begin{problem}{A}
+Let $y = X\beta + e$, where $y = (y_1, \ldots, y_N)$, $X$ is an $N \times P$ patrix with $i$th row $x_i$ and $e$ a vector of model residuals.
+Further let $W$ be the $N \times N$ diagonal vector of weights $w_i$.
+
+We may then rewrite the equation $\hat{\beta} = \arg \min_{\beta \in \R^p} \sum_{i=1}^{N} \frac{w_i}{2}(y_i - x_i^T \beta)^2$ in vector form as 
+$$ \hat{\beta} = \arg \min_{\beta \in \R^p} (y - X\beta)^T W (y-X\beta)$$.
+We note that this is equivalent to 
+$$\hat{\beta} = \arg \min_{\beta \in \R^p} || y - X\beta||_W$$.
+
+Let $r = y - X\beta$
+We want to show that a vector $\beta \in \R^p$ minimizes the weighted norm $||r||_W = || y - X\beta||_W$ iff $X^TWy = X^TWX\beta$
+
+We note, however, that 
+\begin{align*}
+X^TWy &= X^TWX\beta \Rightarrow\\
+X^TWy - X^TWX &= 0\\
+X^TW(y - X\beta) &= 0\\
+X^TWr &= 0 \ \text{(note that, because $W$ is diagonal, $W = W^T$)}\\
+\end{align*}
+
+Thus, it is equivalent to prove that  $\beta \in \R^p$ minimizes the weighted norm $||r||_W = || y - X\beta||_W$ iff $r$ is orthogonal to $range(X)$ under the inner product induced by the weighted norm (the weighted inner product). This, however, follows immediately from the properties of orthogonality.
+
+This orthogonal approach gives good geometric intuition into the problem. 
+\\\\Another method that can be used here is a differentiation argument, as follows.
+We wish to minimize $$(y - X\beta)^T W (y-X\beta)$$.
+We wish to find $\hat{\beta}$ s.t. $(y - X\beta)^T W (y-X\beta)$ is minimized.
+Thus, in order for this quantity to be minimized, it must satisfy:
+\begin{align*}
+\frac{d}{d\beta}\left((y - X\hat{\beta})^T W (y-X\hat{\beta}) \right)&= 0\\
+\frac{d}({d\beta}\left((y^T - (X\hat{\beta})^T)W (y - X\hat{\beta}) \right)&= 0 \\
+\frac{d}({d\beta}\left((y^TW - \hat{\beta}^TX^TW)(y - X\hat{\beta})\right) &= 0\\
+\frac{d}{d\beta}\left(y^TWy - y^TWX\hat{\beta} - \hat{\beta}^TX^TWy + \hat{\beta}^TX^TWX\hat{\beta} \right)&= 0\\
+\frac{d}{d\beta}\left(y^TWy -  (\hat{\beta}^TX^TWy)^T-\hat{\beta}^TX^TWy + \hat{\beta}^TX^TWX\hat{\beta} \right)&= 0\\
+\frac{d}{d\beta}\left(y^TWy - 2\hat{\beta}^TX^TWy  + \hat{\beta}^TX^TWX\hat{\beta} \right) &= 0 \ \text{(note that  $\hat{\beta}^TX^TWy$ is a scalar)}\\
+0 - 2X^TWy + 2X^TWX\hat{\beta} &= 0\\
+-X^TWy + X^TWX\hat{\beta} &= 0
+\end{align*}
+Thus $\hat{\beta}$ must satisfy $ X^TWX\hat{\beta} = X^TWy$. $\square$
+\end{problem}
+
+\begin{problem}{B}
+Numerically speaking, the inversion method is  certainly not a very stable way to actually solve the linear system. 
+Furthermore, when the problem is formulated in terms of computing an explicit inverse (rather than a matrix solve method), it is certainly not a very fast way to solve the linear system.
+
+In numerical linear algebra, there are three fairly standard factorizations used to formulate the least squares problem without any explicit inversions: Cholesky factorization, QR factorization, and singular value decomposition.
+Each is valuable in different scenarios. 
+Solving least squares via cholesky factorization utilizes the normal equations and is one of the fastest methods to solve for $\beta$.
+However, this method is unstable.
+On the other hand, solving the least squares problem via the SVD is stable, but is one of the slowest methods.
+It is the best algorithm for  cases when the matrix $X$ is close to begin rank-deficient (the smallest singular value is very small).
+Generally, solving WLS via a QR factorization is the most appropriate method.
+Ths method is faster than the SVD and far more stable than the Cholesky method.
+We will implement WLS via QR factorization as ``our method''.
+
+Essentially, the idea of the QR factorization method is to reduce the problem to a triangular solve.
+Thus we take $QR = W^{.5}X$, where $QR$ is the reduced QR factorization of $W^.5X$ (where $R$ is a square, triangular matrix and $Q$ has orthonormal columns) and substitute this to obtain:
+\begin{align*}
+X^TWX\beta &= X^T Wy\\
+X^TW^{.5}W^{.5}X\beta &= X^T W^{.5}W^{.5}y\\
+R^TQ^TQR\beta &= R^TQ^TW^{.5}y\\
+R^TR\beta&=R^TQ^TW^{.5}y\\
+R\beta &= Q^TW^{.5}y\\
+\end{align*}
+
+Thus, the basic algorithm gives us:
+\begin{enumerate}
+    \item Take $W^{.5}X$ (note that this is a simple broadcast)
+    \item Compute the reduced $QR$ factorization of $W^.5X$.
+    \item Compute $Q^TW^{.5}y$ 
+    \item Solve the upper triangular system $R\beta = Q^TW^{.5}y$.
+\end{enumerate}
+\end{problem}
+
+\begin{problem}{C}
+Please see the attached code
+\end{problem}
+
+\begin{problem}{D}
+Please see the attached code
+\end{problem}
+
+\end{document}
