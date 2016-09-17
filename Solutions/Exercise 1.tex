@@ -166,7 +166,9 @@ We want to show that the second order Taylor approximation of $l(\beta)$ around 
 $$q(\beta;\beta_0) = \frac{1}{2}(z - X\beta)^TW(z-X\beta) + c$$
 where $z$ is a vector of ``working responses'' and $W$ is the diagonal matrix of ``working weights'' and $c$ is a constant that doesnt involve $\beta$.
 
-Recall that we have that $\nabla l(\beta) = \sum_{i=1}^N(m_iw_i - y_i)x_i$
+Recall that we have that $\nabla l(\beta) = \sum_{i=1}^N(m_iw_i - y_i)x_i^T$
+We note that this could be written $s^TX$, where $s$ is a vector whose ith element is $m_iw_i - y_i$.
+
 Further recall that $\nabla_\beta w_i = w_i(1-w_i)x_i^T$
 We want to further consider $\nabla^2 l(\beta)$.
 \begin{align*}
@@ -186,19 +188,18 @@ Noting this gives us that $\nabla_\beta(m_iw_ix_i) = m_iw_i(1-w_i)x_i \otimes x_
 
 Thus we write $$\nabla^2 l (\beta) = \sum_{i=1}^N m_iw_i(1-w_i)x_ix_i^T$$.
 
+Then we can write $X^T W X$ where $W$ is the diagonal matrix with diagonal ``weight'' elements $m_iw_i(1-w_i)$.
+
 
 Using the second-order Taylor series expansion centered at the initial point $\beta_0$, we have
 $$q(\beta) = l(\beta_0) + \nabla f(\beta_0)(\beta - \beta_0) + \frac{1}{2} (\beta - \beta_0)^T \nabla^2 f(\beta_0)(\beta - \beta_0)$$
 \begin{align*}
-q(\beta) &= l(\beta_0) +\left( \sum_{i=1}^N (m_iw_i - y_i)x_i^T \right)(\beta - \beta_0) + \frac{1}{2}(\beta - \beta_0)^T\sum_{i=1}^Nm_iw_i(1-w_i)x_ix_i^T(\beta - \beta_0)\\
-&= l(\beta_0) +\left( \sum_{i=1}^N (m_iw_i - y_i)x_i^T(\beta - \beta_0) \right) + \sum_{i=1}^Nm_iw_i(1-w_i)(\frac{1}{2}(\beta - \beta_0)^T)x_ix_i^T(\beta - \beta_0)\\
-&= l(\beta_0) + \sum_{i=1}^N \left((m_iw_i - y_i) + \frac{1}{2}m_iw_i(1-w_i)(\beta - \beta_0)^Tx_i) \right)x_i^T(\beta - \beta_0)\\
-&= l(\beta_0) + \sum_{i=1}^N \left( m_iw_i\left(1  + \frac{1}{2}(1-w_i)(\beta - \beta_0)^Tx_i)\right) - y_i \right)x_i^T(\beta - \beta_0)
+q(\beta) &= l(\beta_0) + s^TX(\beta - \beta_0) + \frac{1}{2}(\beta - \beta_0)^T X^TWX (\beta - \beta_0)\\
 \end{align*}
 \end{problem}
 
 \begin{problem}{D}
-See attached code
+See attached code, ``Exercise 1, Newtons method.py''
 \end{problem}
 
 \begin{problem}{E}
