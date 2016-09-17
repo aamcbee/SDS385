@@ -113,13 +113,11 @@ Thus, the basic algorithm gives us:
 \end{enumerate}
 \end{problem}
 
-\begin{problem}{C}
-Please see the attached code
+\begin{problem}{C, D}
+Please see the attached code, ``Exercise 1, Weighted Least Squares.ipynb''
 \end{problem}
 
-\begin{problem}{D}
-Please see the attached code
-\end{problem}
+
 
 \section*{Generalized Linear Models}
 
@@ -157,7 +155,7 @@ We now find
 \end{problem}
 
 \begin{problem}{B}
-See attached Code
+See attached Code, ``Exercise 1, Conjugate Gradient.ipynb''.
 \end{problem}
 
 \begin{problem}{C}
@@ -199,10 +197,14 @@ q(\beta) &= l(\beta_0) + s^TX(\beta - \beta_0) + \frac{1}{2}(\beta - \beta_0)^T 
 \end{problem}
 
 \begin{problem}{D}
-See attached code, ``Exercise 1, Newtons method.py''
+See attached code, ``E1\_Newtons.py''
 \end{problem}
 
 \begin{problem}{E}
-
+When we compare the convergence rates of Newton's method and  gradient descent, it is clear that Newton's method converges it far fewer iterations than gradient descent.
+However, Newton's method can have a significant overhead cost associated with computing and manipulating the hessian matrix.
+Sometimes, in light of this cost, it is better to use gradient descent or stochastic gradient descent, which involves calculating the gradient alone, rather than the hession (significantly fewer computations per iteration).
+On the other hand, various quasi newton methods can also be a good solution to this problem.
+These methods such as, for example, the BFGS method, approximate the hessian to attain a higher rate of convergence inherent in newton's method, but without the cost of explicit hessian calculation.
 \end{problem}
 \end{document}
