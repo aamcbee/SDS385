@@ -20,8 +20,8 @@ Index = []
 # Corresponding data.
 for Xj in X:
     for i in np.arange(Xj.shape[0]):
-        Data.append(Xj[i].data)
-        Index.append(Xj[i].indices)
+        Data.append(np.hstack((1,Xj[i].data))) # Note we add 1 to get an intercept term
+        Index.append(np.hstack((0,Xj[i].indices + 1))) # Note we shift the indices to get the intercept term
 
 # Save the list of sample data, the list of sample indices, and the y values
 # in binary file form
