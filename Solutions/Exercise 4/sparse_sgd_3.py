@@ -37,7 +37,7 @@ def rm_sgd_segment(Data, Index, y, m, b0, step_start, lam=.05):
     b0: P vector corresponding to the initial guess vector. This argument is consumed
         throughout the algorithm.
     stepstart: Int, the starting step for the segment
-    lam: Float, the penalty constant for the l2 penalty
+    lam: Float, the penalty coefficient for the l2 penalty
 
     ----------
     Outputs:
@@ -48,23 +48,31 @@ def rm_sgd_segment(Data, Index, y, m, b0, step_start, lam=.05):
     '''
 
     # Initialize various values
-    #N, P = X.shape
+    # N is the number of samples in the block, alpha and C correspond to the robbin's monro stepsize
     N = len(Data)
     C = .5
     alpha = .75
-    # SPLIT UP DATA, CHANGE THE STEPSIZE ACCORDINGLY
-    stepsize = C * np.arange(step_start + 1, step_start + N+1)**(-alpha)
-
+    # Set all the stepsizes for the block, beginning with the step-start value
+    stepsize = C * np.arange(step_start + 1, step_start + N + 1)**(-alpha)
+    
+    # Calculate all of the nonzero indices used in the samples as a whole
     B_ind = np.zeros_like(b0)
     for I in Index:
         B_ind[I] = 1.
     bindex = B_ind.nonzero()
+    
+    # Run the SGD algorithm on the block
     for j in xrange(N):
-        Xj = Data[j]
-        sp_index = Index[j]
-        b1 = b0[sp_index]
-        b0[bindex] *= (1 - 2 * lam * stepsize[j])
+        # Extract the appropriate sample
+        Xj = Data[j] 
+        # Extract the sparse index for the specific sample
+        sp_index = Index[j] 
+        # Extract the b0 values only on the sparse index for this sample (for gradient calculation)
+        b1 = b0[sp_index] 
+        # Take care of penalty terms on bindex
+        b0[bindex] *= (1 - 2 * lam * stepsize[j]) 
         b0[sp_index] -= stepsize[j] * gi(Xj, y[j], m[j], b1)
+    # Compensate for penalty terms on trivial sample indices
     b0 *= (1 - 2 * lam * stepsize.sum())
     b0[bindex] /= (1 - 2 * lam * stepsize.sum())
     return b0
