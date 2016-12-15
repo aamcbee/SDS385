@@ -6,13 +6,6 @@ url = "http://archive.ics.uci.edu/ml",
 institution = "University of California, Irvine, School of Information and Computer Sciences" }
 
 
-@misc{Thyroid,
-     author="Jerome M. Hershman",
-     publisher = "Merck & Co.",
-     title = "Overview of the Thyroid Gland",
-     url = "http://www.merckmanuals.com/home/hormonal-and-metabolic-disorders/thyroid-gland-disorders/overview-of-the-thyroid-gland?qt=thyroxine&alt=sh"
-}
-
 @article{NaiveBayes,
      title="Naive Bayes",
      year="2014",
@@ -20,3 +13,69 @@ institution = "University of California, Irvine, School of Information and Compu
      publisher="scikit learn",
      url="http://scikit-learn.org/stable/modules/naive\_bayes.html"
 }
+
+@article{Domingos1997,
+     author="Domingos, Pedro and Pazzani, Michael",
+     title="On the Optimality of the Simple Bayesian Classifier under Zero-One Loss",
+     journal="Machine Learning",
+     year="1997",
+     volume="29",
+     number="2",
+     pages="103--130",
+     abstract="The simple Bayesian classifier is known to be optimal when attributes are independent given the class, but the question of whether other sufficient conditions for its optimality exist has so far not been explored. Empirical results showing that it performs surprisingly well in many domains containing clear attribute dependences suggest that the answer to this question may be positive. This article shows that, although the Bayesian classifier's probability estimates are only optimal under quadratic loss if the independence assumption holds, the classifier itself can be optimal under zero-one loss (misclassification rate) even when this assumption is violated by a wide margin. The region of quadratic-loss optimality of the Bayesian classifier is in fact a second-order infinitesimal fraction of the region of zero-one optimality. This implies that the Bayesian classifier has a much greater range of applicability than previously thought. For example, in this article it is shown to be optimal for learning conjunctions and disjunctions, even though they violate the independence assumption. Further, studies in artificial domains show that it will often outperform more powerful classifiers for common training set sizes and numbers of attributes, even if its bias is a priori much less appropriate to the domain. This article's results also imply that detecting attribute dependence is not necessarily the best way to extend the Bayesian classifier, and this is also verified empirically.",
+     issn="1573-0565",
+     doi="10.1023/A:1007413511361",
+     url="http://dx.doi.org/10.1023/A:1007413511361"
+}
+
+@article{Webb2005,
+author="Webb, Geoffrey I.
+and Boughton, Janice R.
+and Wang, Zhihai",
+title="Not So Naive Bayes: Aggregating One-Dependence Estimators",
+journal="Machine Learning",
+year="2005",
+volume="58",
+number="1",
+pages="5--24",
+abstract="Of numerous proposals to improve the accuracy of naive Bayes by weakening its attribute independence assumption, both LBR and Super-Parent TAN have demonstrated remarkable error performance. However, both techniques obtain this outcome at a considerable computational cost. We present a new approach to weakening the attribute independence assumption by averaging all of a constrained class of classifiers. In extensive experiments this technique delivers comparable prediction accuracy to LBR and Super-Parent TAN with substantially improved computational efficiency at test time relative to the former and at training time relative to the latter. The new algorithm is shown to have low variance and is suited to incremental learning.",
+issn="1573-0565",
+doi="10.1007/s10994-005-4258-6",
+url="http://dx.doi.org/10.1007/s10994-005-4258-6"
+}
+
+@article{Jiang201211022,
+title = "Not so greedy: Randomly Selected Naive Bayes ",
+journal = "Expert Systems with Applications ",
+volume = "39",
+number = "12",
+pages = "11022 - 11028",
+year = "2012",
+note = "",
+issn = "0957-4174",
+doi = "http://dx.doi.org/10.1016/j.eswa.2012.03.022",
+url = "http://www.sciencedirect.com/science/article/pii/S0957417412004927",
+author = "Liangxiao Jiang and Zhihua Cai and Harry Zhang and Dianhong Wang",
+keywords = "Naive Bayes",
+keywords = "Attribute selection",
+keywords = "Random search",
+keywords = "Classification",
+keywords = "Ranking",
+keywords = "Class probability estimation "
+}
+
+@article{Zheng2000,
+author="Zheng, Zijian
+and Webb, Geoffrey I.",
+title="Lazy Learning of Bayesian Rules",
+journal="Machine Learning",
+year="2000",
+volume="41",
+number="1",
+pages="53--84",
+abstract="The naive Bayesian classifier provides a simple and effective approach to classifier learning, but its attribute independence assumption is often violated in the real world. A number of approaches have sought to alleviate this problem. A Bayesian tree learning algorithm builds a decision tree, and generates a local naive Bayesian classifier at each leaf. The tests leading to a leaf can alleviate attribute inter-dependencies for the local naive Bayesian classifier. However, Bayesian tree learning still suffers from the small disjunct problem of tree learning. While inferred Bayesian trees demonstrate low average prediction error rates, there is reason to believe that error rates will be higher for those leaves with few training examples. This paper proposes the application of lazy learning techniques to Bayesian tree induction and presents the resulting lazy Bayesian rule learning algorithm, called LBR. This algorithm can be justified by a variant of Bayes theorem which supports a weaker conditional attribute independence assumption than is required by naive Bayes. For each test example, it builds a most appropriate rule with a local naive Bayesian classifier as its consequent. It is demonstrated that the computational requirements of LBR are reasonable in a wide cross-section of natural domains. Experiments with these domains show that, on average, this new algorithm obtains lower error rates significantly more often than the reverse in comparison to a naive Bayesian classifier, C4.5, a Bayesian tree learning algorithm, a constructive Bayesian classifier that eliminates attributes and constructs new attributes using Cartesian products of existing nominal attributes, and a lazy decision tree learning algorithm. It also outperforms, although the result is not statistically significant, a selective naive Bayesian classifier.",
+issn="1573-0565",
+doi="10.1023/A:1007613203719",
+url="http://dx.doi.org/10.1023/A:1007613203719"
+}
+
