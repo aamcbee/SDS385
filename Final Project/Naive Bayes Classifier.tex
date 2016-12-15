@@ -46,6 +46,7 @@
 \newcommand{\norm}[1]{\left\lVert#1\right\rVert}
 \newcommand{\li}[1]{\lstinline[prebreak=]!#1!}
 \newcommand{\p}[1]{\left(#1\right)}
+\newcommand{\brac}[1]{\left[ #1 \right]}
 \DeclareMathOperator*{\argmax}{\arg\,max}
 
 \begin{document}
@@ -68,8 +69,8 @@
 \end{comment}
 
 A Naive Bayes classifier is a simple and accessible model that has numerous applications: from text classification to medical diagnostics. 
-Naive Bayes has essentially two parts: application of Bayes theorem and a strong independence assumption.
-To describe the algorithm and how it works, we will discuss it in the context of a very simple classification problem.
+Naive Bayes has essentially two parts: application of Bayes' theorem and a strong independence assumption.
+To describe the algorithm and how it works, we will discuss it in the context of a simple classification problem.
 \section*{The Problem}
 Suppose we want to build a classifier based on the ``seeds'' dataset found in the UCI Machine Learning repository \cite{Lichman}.
 This dataset consists of 210 randomly selected samples of wheat kernels with seven measurements for associated geometric features.
@@ -89,9 +90,9 @@ Naive Bayes finds the label $y_j$ that maximizes $P(y_j | x_1, x_2, \ldots, x_n)
 This allows us to compute $$P(y_j|x_1, x_2, \ldots x_n) = \frac{P(y_j) \prod_{i=1}^n P(x_i|y_j)}{P(x_1, x_2, \ldots, x_n)}$$
 
 Finally, we can compute the predicted label for our sample:
-$$y = \argmax_{y_j \in Y} \frac{P(y_j) \prod_{i=1}^n P(x_i|y_j)}{P(x_1, x_2, \ldots, x_n)} = \argmax_{y_j \in \text{label set}}P(y_j) \prod_{i=1}^n P(x_i|y_j) $$
+$$y = \argmax_{y_j \in Y} \brac{\frac{P(y_j) \prod_{i=1}^n P(x_i|y_j)}{P(x_1, x_2, \ldots, x_n)}} = \argmax_{y_j \in \text{label set}}\brac{P(y_j) \prod_{i=1}^n P(x_i|y_j)}$$
 We avoid underflow by equivalently solving
-$$y = \argmax_{y_j \in K}\log(P(y_j)) + \sum_{i=1}^n \log(P(x_i|y_j))$$
+$$y = \argmax_{y_j \in K}\brac{\log(P(y_j)) + \sum_{i=1}^n \log(P(x_i|y_j))}$$
 
 The assumption that the features of our dataset are independent of one another may seem rather strong--it is the reason Naive Bayes is considered ``naive.''
  Indeed, when we take a look at the features in the wheat dataset, we see a clear dependence between the area parameter and the length and width parameters. 
@@ -106,8 +107,7 @@ Thus $P(Kama) = \frac{70}{210} = \frac{1}{3}$.
 
 
 Since each feature in the seeds dataset is continuous and real valued, we decide to use the Gaussian distribution to model $P(x_i| y_j)$ for each $i \in \{1, \ldots, n\}, j \in \{1, \ldots, m\}$.
-Note that although we will be demonstrating the efficacy of the Gaussian Naive Bayes classifier in this example, Multivariate and Bernouilli Naive Bayes classifiers are equally popular (indeed, Multinomial Naive Bayes is highly effective in text classification).
-%%%%%%%%%%%%%% PUT A CITATION HERE %%%%%%%%%%%
+Note that although we will be demonstrating the efficacy of the Gaussian Naive Bayes classifier in this example, Multivariate and Bernoulli Naive Bayes classifiers are equally popular (indeed, Multinomial Naive Bayes is a prominent method in text classification).
 We calculate each $P(x_i | y_j)$ by using the maximum likelihood estimator to determine the appropriate parameters for each label.
 Thus, if there are $l$ samples in the training set with label $y_j$, and $\{X_{ki}\}_{k=1}^l$ is the set of measurements for feature $i$ on this set of samples, then $$\mu_{ji} = \frac{1}{l} \sum_{k=1}^l X_{ki}$$ and $$\sigma^2_{ji} = \frac{1}{l} \sum_{k=1}^l (X_{ki} - \mu_{ji})^2$$.
 %Then, if $x_i$ is the measurement of our new sample for feature $i$, we can compute $$P(x_i | y_j) = f(x_i | \mu_{ij}, \sigma_{ij}^2) = \frac{1}{\sqrt
@@ -117,10 +117,10 @@ Then, if $x_i$ is the sample measurement for feature $i$, we can compute  $$P(x_
 
 Finally, we predict the label for our sample $x$: 
 \begin{align*}
-y &= \argmax_{y_j \in Y}\log(P(y_j)) + \sum_{i=1}^n \log(P(x_i|y_j))\\
-&= \argmax_{y_j \in Y}\log(P(y_j)) + \sum_{i=1}^n \log\p{\frac{1}{\sqrt{2 \sigma_{ji}^2 \pi}} e^{-\frac{(x_i - \mu_{ji})^2}{2 \sigma_{ji}^2}}}\\
-&= \argmax_{y_j \in Y}\log(P(y_j)) + \sum_{i=1}^n \log\p{\frac{1}{\sqrt{2 \sigma_{ji}^2 \pi}}} + \log \p{ e^{-\frac{(x_i - \mu_{ji})^2}{2 \sigma_{ji}^2}}}\\
-&= \argmax_{y_j \in Y}\log(P(y_j)) + \sum_{i=1}^n \log\p{\frac{1}{\sqrt{2 \sigma_{ji}^2 \pi}}} +  \p{-\frac{(x_i - \mu_{ji})^2}{2 \sigma_{ji}^2}}\\
+y &= \argmax_{y_j \in Y}\brac{\log(P(y_j)) + \sum_{i=1}^n \log(P(x_i|y_j))}\\
+&= \argmax_{y_j \in Y}\brac{\log(P(y_j)) + \sum_{i=1}^n \log\p{\frac{1}{\sqrt{2 \sigma_{ji}^2 \pi}} e^{-\frac{(x_i - \mu_{ji})^2}{2 \sigma_{ji}^2}}}}\\
+&= \argmax_{y_j \in Y}\brac{\log(P(y_j)) + \sum_{i=1}^n \log\p{\frac{1}{\sqrt{2 \sigma_{ji}^2 \pi}}} + \log \p{ e^{-\frac{(x_i - \mu_{ji})^2}{2 \sigma_{ji}^2}}}}\\
+&= \argmax_{y_j \in Y}\brac{\log(P(y_j)) + \sum_{i=1}^n \log\p{\frac{1}{\sqrt{2 \sigma_{ji}^2 \pi}}} +  \p{-\frac{(x_i - \mu_{ji})^2}{2 \sigma_{ji}^2}}}\\
 \end{align*}
 
 This generates the following algorithm for predicting the label of a sample $x$ using a Gaussian Naive Bayes classifier built with training data $X$ (where $X$ is a training set of $l$ samples with $n$ features with a known label for each sample)
@@ -157,7 +157,7 @@ As we can see here, building a Naive Bayes classifier consists of three simple a
     \item Predicting the labels for a test set of samples.
 \end{enumerate}
 
-These pieces are what we use to computationally build up our Gaussian Naive bayes class, found in ``NaiveBayes.py''. 
+These pieces are what we use to computationally build up our Gaussian Naive Bayes class, found in ``NaiveBayes.py''. 
 The array functionality available in NumPy is particularly well suited to this problem, as NumPy's efficient array broadcasting allows us to compute the distribution parameters and prediction probabilities using cohesive array manipulations rather than costly for loops. 
 Fancy indexing  and boolean masks also make returning and manipulating the labels for training data more effective and efficient.
 Details are included in the documentation for ``NaiveBayes.py''
@@ -182,7 +182,7 @@ First, recall that many of the features in our seeds dataset violated the indepe
 Yet our GaussNaiveBayes class yields about 90$\%$ accuracy--a respectable score.
 Even more impressive is the consistency of this accuracy--our model attains about $90\%$ average accuracy for classifiers trained on less than 20\% of the dataset (before dropping as the training dataset becomes insufficiently small, as we would expect to see).
 
-We also note that our personal implementation for Naive Bayes matches the accuracy of the sklearn implementation exactly up to about .9 testsize, and closely in the test sizes following.
+We also note that our personal implementation for Naive Bayes matches the accuracy of the sklearn implementation exactly up to about .9 test size, and closely in the test sizes following.
 This testifies to the simplicity and efficacy of the test size.
 
 In figure two, we take a closer look at the individual accuracies for each test run. 
@@ -203,8 +203,8 @@ Note that these accuracy scatter-plots match almost exactly between the industri
     %\label{fig:intro2}
 \end{figure}
  
- Finally, we want to compare the timing between the industrial implementation of gaussian naive bayes and our personal class. 
- Using the magic $\%\% timeit$ function in the ipython notebook, we find that the GaussNaiveBayes class predict method is actually faster than it's sklearn counterpart (between 1/3 - 2/3 the time).
+ Finally, we want to compare the timing between the industrial implementation of Gaussian Naive Bayes and our personal class. 
+ Using the magic $\%\% timeit$ function in the ipython notebook, we find that the GaussNaiveBayes class predict method is actually faster than it's sklearn counterpart (it takes between 1/3 and 2/3 the timeof the industrial classifier).
  For example, for a test size of $0.2$, we have the following results:
 \begin{lstlisting}
  train, test = train_test_split(np.arange(y.size),test_size=.2)
@@ -227,9 +227,27 @@ p1 = NB.predict(Xt)
 p2 = sklNB.predict(Xt)
 #>>>10000 loops, best of 3: 112 micro s per loop
  \end{lstlisting}
- Though this is likely due to some preprossessing and assertions on the part of the more robust sklearn function, which become important at higher dimensions, this still speaks highly to the efficiency of our implementation. 
+ Though this is likely due to some preprocessing and assertions on the part of the more robust sklearn function, which become important at higher dimensions, this still speaks highly to the efficiency of our implementation. 
  
- \section*{Improving Naive Bayes}
+ \section*{Improvements and observations}
+We have empirically shown the good performance of the Naive Bayes algorithm for our dataset.
+We now consider how Naive Bayes might be improved.
+The first consideration, of course, is to find a way to improve the accuracy of Naive Bayes for a problem that violates the independence assumption.
+Yet in 1997, Pedro Domingos and Michael Pazzani published a pivotal paper that showed that the Bayesian classifier is globally optimal for learning disjunctions and conjunctions of literals (that is, features that satisfy independence for class 0 and not class 1, or vice versa)\cite{Domingos1997}. 
+Essentially, their work significantly extended the known class of functions for which Naive Bayes is optimal to a far greater class than problems satisfying independence.
+
+Our next consideration might be to address the set of problems where this looser set of assumptions is still violated.
+We might suggest that a good way to improve the accuracy of the Naive Bayes classifier would be to perform some sort of model selection to minimize error due to dependence by selecting features that minimize this error.
+Yet, in the same paper mentioned above, Domingos and Pazzani also empirically demonstrated that the Naive Bayes classifier may still perform better than classifiers that extend naive bayes by detecting feature dependence \cite{Domingos1997}. 
+Indeed, in a 2005 paper, Webb, Boughton and Wang note that using model selection increases the expected variance of the model, since selecting between models (for example, removing features that satisfy some ``dependence'' assumption) will cause the model to more closely fit the corresponding training data \cite{Webb2005}.
+The classifier is then more susceptible to changes in the training data, whereas the Naive Bayes classifier's lack of model selection actually makes changes in the model ``more gradual'' \cite{Webb2005}.
+
+Obviously, this is not to say that Naive Bayes cannot be and has not been improved. 
+In 2000, Zheng and Webb introduced the LBR algorithm (Lazy Learning of Bayesian Rules) which applies ``lazy learning techniques to Bayesian tree induction'' obtains significantly lower error rates than simple Naive Bayes \cite{Zheng2000}.
+In 2005, Webb, Boughton and Wang introduced an algorithm that averages all of a constrained class of classifiers to obtain a scheme that has similar accuracy to this $LBR$ method and greater computational efficiency \cite{Webb2005}.
+In 2012, Jiang, Cai, Zhange, and Wang introduced yet another improved Naive Bayes method that uses a random search through the space of attributes for an improved selection scheme for Naive Bayes \cite{Jiang201211022}
+Indeed, research on improvements to Naive Bayes and its application areas are ongoing and yielding new and powerful results.
+However, it is important to observe that in the case of the Naive Bayes classifier, the base algorithm is not nearly so naive as it's name implies.
 
 
 \bibliography{fp_references}
